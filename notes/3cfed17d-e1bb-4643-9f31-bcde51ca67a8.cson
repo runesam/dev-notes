@@ -1,0 +1,27 @@
+createdAt: "2018-07-25T10:42:26.229Z"
+updatedAt: "2018-07-25T10:43:30.047Z"
+type: "SNIPPET_NOTE"
+folder: "f4be61b8505bcdf00fd4"
+title: "clone repo to another with history"
+description: "clone repo to another with history"
+snippets: [
+  {
+    name: "steps to follow"
+    mode: "text"
+    content: '''
+      cd repo2
+      git checkout master
+      git remote add r1remote **url-of-repo1**
+      git fetch r1remote
+      git merge r1remote/master --allow-unrelated-histories
+      git remote rm r1remote
+    '''
+  }
+]
+tags: [
+  "clone"
+  "git"
+  "history"
+]
+isStarred: false
+isTrashed: false

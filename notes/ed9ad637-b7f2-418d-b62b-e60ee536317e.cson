@@ -1,0 +1,34 @@
+createdAt: "2018-07-25T12:24:39.069Z"
+updatedAt: "2018-07-25T12:25:33.911Z"
+type: "SNIPPET_NOTE"
+folder: "60f2be28d5e3dfe51def"
+title: "mvn"
+description: "mvn"
+snippets: [
+  {
+    name: "mvn verify commands"
+    mode: "text"
+    content: '''
+      # command
+      mvn -version
+      
+      # output should be similar to
+      
+      Apache Maven 3.0.5
+      Maven home: /usr/share/maven
+      Java version: 1.7.0_55, vendor: Oracle Corporation
+      Java home: /usr/lib/jvm/java-7-openjdk-amd64/jre
+      Default locale: en_US, platform encoding: UTF-8
+      OS name: "linux", version: "3.13.0-33-generic", arch: "amd64", family: "unix"
+      
+      
+      Maven creates the build result in the target folder.
+      mvn clean install
+      
+      By default, Maven checks online if the dependencies have been changed. If you want to use your local repository, you can use the -o to tell Maven to work offline.
+    '''
+  }
+]
+tags: []
+isStarred: false
+isTrashed: true

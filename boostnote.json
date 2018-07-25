@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "key": "f4be61b8505bcdf00fd4",
+      "color": "#1278BD",
+      "name": "git"
+    },
+    {
+      "key": "2f17bef9ad2f11f30f37",
+      "color": "#E10051",
+      "name": "front-end"
+    },
+    {
+      "key": "60f2be28d5e3dfe51def",
+      "color": "#30D5C8",
+      "name": "back-end"
+    },
+    {
+      "key": "ab21d9b8c8f4ac7cf2d1",
+      "color": "#E8D252",
+      "name": "dev-ops"
+    }
+  ],
+  "version": "1.0"
+}
