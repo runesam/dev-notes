@@ -1,0 +1,49 @@
+createdAt: "2018-07-25T16:55:33.318Z"
+updatedAt: "2018-07-25T16:56:34.449Z"
+type: "MARKDOWN_NOTE"
+folder: "2f17bef9ad2f11f30f37"
+title: "pay attention to when you initial new project"
+content: '''
+  #### pay attention to when you initial new project
+  
+  1. New repo
+  2. Setup react project
+      1. Webpack
+          1. Loaders
+              1. raw-loader
+              2. babel-loader
+              3. url-loader
+              4. file-loader
+          2. Global variables to be injected (brand, ENV and API_URL => to be discussed)
+          3. Generic handler for Dev and Prod environments.
+      2. .babelrc => we can config more plugins better than including the whole babel-polyfill
+      3. .eslintrc => https://github.com/airbnb/javascript
+      4. Node package manager
+          1. (yarn instead of npm)
+          2. scripts
+              1. start (to run dev with watched unit-tests) (it should accept brand as argument)
+              2. test (to run unit, snapshot, integration and coverage tests once)
+              3. test:size (test the bundled file)
+              4. prebuild (build + serve)
+              5. build
+          3. tests
+              1. Currently we are using karma as test runner but we are testing in jsDom (memory browser). So I suggest (jest or mocha) on their own as they are way faster.
+              2. chai => for assertion
+              3. Enzyme => test react components
+              4. jest or mocha-snapshot => test snapshots
+              5. Istanbul code coverage tools would do the trick including reports
+  3. Structure src directory
+  	I suggest the following
+      1. 
+  
+  
+  
+'''
+tags: [
+  "new"
+  "front-end"
+  "react"
+  "best"
+]
+isStarred: false
+isTrashed: false

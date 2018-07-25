@@ -1,0 +1,19 @@
+createdAt: "2018-07-25T16:54:44.215Z"
+updatedAt: "2018-07-25T16:56:12.029Z"
+type: "SNIPPET_NOTE"
+folder: "2f17bef9ad2f11f30f37"
+title: "pay attention to when you initial new project"
+description: '''
+  pay attention to when you initial new project
+  
+'''
+snippets: [
+  {
+    name: "general"
+    mode: "text"
+    content: ""
+  }
+]
+tags: []
+isStarred: false
+isTrashed: true
