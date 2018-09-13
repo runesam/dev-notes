@@ -1,0 +1,25 @@
+createdAt: "2018-08-01T07:47:18.358Z"
+updatedAt: "2018-08-01T07:48:22.566Z"
+type: "SNIPPET_NOTE"
+folder: "60f2be28d5e3dfe51def"
+title: "dependency ingection to pom"
+description: "dependency ingection to pom"
+snippets: [
+  {
+    name: "pom.xml"
+    mode: "XML"
+    content: '''
+      <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <version>25.0-jre</version>
+      </dependency>
+    '''
+  }
+]
+tags: [
+  "google"
+  "googleGuava"
+]
+isStarred: false
+isTrashed: false

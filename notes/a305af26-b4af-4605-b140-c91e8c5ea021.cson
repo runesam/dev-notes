@@ -1,0 +1,80 @@
+createdAt: "2018-08-01T07:45:34.123Z"
+updatedAt: "2018-08-01T07:48:33.341Z"
+type: "SNIPPET_NOTE"
+folder: "60f2be28d5e3dfe51def"
+title: "populate a list to db"
+description: "populate a list to db"
+snippets: [
+  {
+    name: "DefaultDbPopulator.java"
+    mode: "Java"
+    content: '''
+      package energy.getfresh.databahn.user.api.service;
+      
+      import com.google.common.collect.ImmutableMap;
+      import energy.getfresh.databahn.user.api.model.Appliance;
+      import org.springframework.stereotype.Service;
+      import org.springframework.transaction.annotation.Transactional;
+      
+      import javax.inject.Inject;
+      import javax.inject.Provider;
+      import javax.persistence.EntityManager;
+      
+      @Service
+      public class DefaultDbPopulator {
+      
+          private final Provider<EntityManager> entityManagerProvider;
+      
+          @Inject
+          public DefaultDbPopulator(Provider<EntityManager> entityManagerProvider) {
+              this.entityManagerProvider = entityManagerProvider;
+          }
+      
+          @Transactional
+          public void populateFakeData() {
+              ImmutableMap.builder()
+                  .put("WASHING_MACHINE","washingMachine")
+                  .put("DISH_WASHER","dishWasher")
+                  .put("REFRIGERATOR","refrigerator")
+                  .put("FRIDGE_COMBO","fridgeCombo")
+                  .put("FREEZER","freezer")
+                  .put("TUMBLE_DRYER","tumbleDryer")
+                  .put("OVEN","oven")
+                  .put("HOB","hob")
+                  .put("KETTLE","kettle")
+                  .put("MICROWAVE","microwave")
+                  .put("CABLE_BOX","cableBox")
+                  .put("TABLET","tablet")
+                  .put("GAME_CONSOLE","gameConsole")
+                  .put("ELECTRIC_VEHICLE","electricVehicle")
+                  .put("GRILL","grill")
+                  .put("DVD","dvd")
+                  .put("TV","tv")
+                  .put("IRON","iron")
+                  .put("SAUNA","sauna")
+                  .put("POOL_PUMP","poolPump")
+                  .put("COMPUTER","computer")
+                  .put("TOASTER","toaster")
+                  .put("ELECTRIC_SHOWER","electricShower")
+                  .build()
+                  .entrySet()
+                  .stream()
+                  .forEach(entry ->
+                      entityManagerProvider.get().persist(Appliance.builder()
+                          .applianceId(entry.getKey().toString())
+                          .applianceName(entry.getValue().toString())
+                          .build()
+                      )
+                  );
+      
+          }
+      }
+      
+    '''
+  }
+]
+tags: [
+  "ListPopulator"
+]
+isStarred: false
+isTrashed: false

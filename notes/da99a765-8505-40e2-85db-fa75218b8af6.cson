@@ -1,0 +1,43 @@
+createdAt: "2018-08-01T07:31:46.358Z"
+updatedAt: "2018-08-01T07:48:41.259Z"
+type: "SNIPPET_NOTE"
+folder: "60f2be28d5e3dfe51def"
+title: "a spring boot startup listener"
+description: "a spring boot startup listener "
+snippets: [
+  {
+    name: "StartupListener.java"
+    mode: "Java"
+    content: '''
+      package energy.getfresh.databahn.user.api.service;
+      
+      import org.springframework.context.ApplicationListener;
+      import org.springframework.context.event.ContextRefreshedEvent;
+      import org.springframework.stereotype.Service;
+      
+      import javax.inject.Inject;
+      
+      @Service
+      public class StartupListener implements ApplicationListener<ContextRefreshedEvent> {
+      
+          private final DefaultDbPopulator dbPopulator;
+      
+          @Inject
+          public StartupListener(DefaultDbPopulator dbPopulator) {
+              this.dbPopulator = dbPopulator;
+          }
+      
+          @Override
+          public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+              dbPopulator.populateFakeData();
+          }
+      }
+      
+    '''
+  }
+]
+tags: [
+  "startupListener"
+]
+isStarred: false
+isTrashed: false

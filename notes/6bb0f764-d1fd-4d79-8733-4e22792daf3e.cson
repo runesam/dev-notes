@@ -1,0 +1,27 @@
+createdAt: "2018-09-13T09:48:43.684Z"
+updatedAt: "2018-09-13T09:49:13.089Z"
+type: "SNIPPET_NOTE"
+folder: "ab21d9b8c8f4ac7cf2d1"
+title: "kill'em all"
+description: "kill'em all"
+snippets: [
+  {
+    name: ""
+    mode: "text"
+    content: '''
+      remove all containers forcefully
+      docker rm -f $(docker ps -a -q)
+      
+      remove all docker images forcefully
+      docker rmi -f $(docker images -q)
+    '''
+  }
+]
+tags: [
+  "docker"
+  "devop"
+  "containers"
+  "fresh"
+]
+isStarred: false
+isTrashed: false
