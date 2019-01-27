@@ -1,0 +1,30 @@
+createdAt: "2018-12-18T09:48:10.267Z"
+updatedAt: "2019-01-27T08:56:52.542Z"
+type: "SNIPPET_NOTE"
+folder: "60f2be28d5e3dfe51def"
+title: "lambuk"
+description: '''
+  lambuk 
+  
+'''
+snippets: [
+  {
+    name: ""
+    mode: "Java"
+    content: '''
+      public static class MeterActivityBuilder {
+          public MeterActivityBuilder fromEvent(String event) {
+              if (event.equals("error")) {
+                  error(event);
+              } else {
+                  activity(Boolean.valueOf(event));
+              }
+              return this;
+          }
+      }
+    '''
+  }
+]
+tags: []
+isStarred: false
+isTrashed: false

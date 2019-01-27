@@ -1,5 +1,5 @@
 createdAt: "2018-07-25T10:42:26.229Z"
-updatedAt: "2018-07-25T10:43:30.047Z"
+updatedAt: "2019-01-27T08:57:40.404Z"
 type: "SNIPPET_NOTE"
 folder: "f4be61b8505bcdf00fd4"
 title: "clone repo to another with history"
@@ -7,7 +7,7 @@ description: "clone repo to another with history"
 snippets: [
   {
     name: "steps to follow"
-    mode: "text"
+    mode: "Shell"
     content: '''
       cd repo2
       git checkout master

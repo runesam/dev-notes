@@ -19,6 +19,11 @@
       "key": "ab21d9b8c8f4ac7cf2d1",
       "color": "#E8D252",
       "name": "dev-ops"
+    },
+    {
+      "key": "cc54a653bab1d6fbeb54",
+      "color": "#30D5C8",
+      "name": "swift"
     }
   ],
   "version": "1.0"
