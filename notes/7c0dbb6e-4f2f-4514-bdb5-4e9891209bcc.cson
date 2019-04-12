@@ -1,0 +1,19 @@
+createdAt: "2019-02-07T10:02:49.202Z"
+updatedAt: "2019-02-07T10:03:07.937Z"
+type: "SNIPPET_NOTE"
+folder: "ab21d9b8c8f4ac7cf2d1"
+title: "list all containers"
+description: "list all containers"
+snippets: [
+  {
+    name: ""
+    mode: "text"
+    content: "docker container ls --all"
+  }
+]
+tags: [
+  "docker"
+  "docker_container"
+]
+isStarred: false
+isTrashed: false

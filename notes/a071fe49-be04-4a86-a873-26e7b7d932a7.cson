@@ -1,0 +1,298 @@
+createdAt: "2019-02-18T10:28:45.028Z"
+updatedAt: "2019-02-18T15:17:03.533Z"
+type: "MARKDOWN_NOTE"
+folder: "b25ec41f710bac8ebf03"
+title: "Getec registration"
+content: '''
+  # Getec registration
+  
+  #### 1. User registeration into our system via `POST` end point.
+  ```groovy
+  @PostMapping
+  @ResponseStatus(code = HttpStatus.CREATED)
+  public Resource<User> createUser(@RequestBody @Validated(UserApiResource.class) UserRto userRto,
+                                   HttpServletResponse response) {
+  
+      PaymentDetails paymentDetails = userMapper.mapToPaymentDetails(userRto.getPaymentDetails());
+      User user = userMapper.mapToUser(userRto);
+      User savedUser = userService.createUser(user, paymentDetails);
+  
+      String userLocation = linkTo(UserRestController.class).slash(savedUser).toUri().toString();
+      response.setHeader("Location", userLocation);
+  
+      return new Resource<>(savedUser, entityLinks.linkForSingleResource(savedUser).withSelfRel());
+  }
+  ```
+  
+  ##### it calls the following method:
+  ```groovy
+  public User createUser(User user, PaymentDetails paymentDetails) {
+      checkPreConditions(user);
+      User savedUser = userCreator.createUser(user, paymentDetails);
+      sendRegistrationEmailTo(savedUser);
+      publishCustomerForElectricityProviderRegistration(savedUser);
+  
+      return savedUser;
+  }
+  ```
+  ```groovy
+  private void sendRegistrationEmailTo(User savedUser) {
+      try {
+          customerEmailService.sendSuccessfulRegistrationEmail(savedUser.getEmail());
+      }catch (Exception ex){
+          log.error("Email sending for {} failed with exception", savedUser.getId(), ex);
+      }
+  }
+  ```
+  ```groovy
+  private void publishCustomerForElectricityProviderRegistration(User savedUser) {
+      customerPublisher.publishCustomer(savedUser.getId());
+  }
+  ```
+  ```groovy
+  public void publishCustomer(long id) {
+      log.info("Publishing customer, id: {}", id);
+      assertNotSent(id);
+      Customer customer = customerExportService.export(id);
+      customerExportChannel.send(new GenericMessage<>(customer));
+  }
+  ```
+  ***
+  #### 1. We listen to getect `ADD_CUSTOMER_RESPONSE` message:
+  ```groovy
+  @StreamListener(CustomerExportChannel.ADD_CUSTOMER_RESPONSE)
+  public void updateUserContractStatusAfterSendingToElectricityProvider(AddCustomerResponse addCustomerResponse) {
+      ContractStatus contractStatus;
+      if (VALIDATED.equals(addCustomerResponse.getCustomerSubmissionStatus())) {
+         contractStatus = SENT; 
+      } else {
+          contractStatus = FAILED_TO_SEND;
+      }
+      contractService.confirmUserWasSentToElectricityProvider(
+          addCustomerResponse.getCustomerId(),
+          contractStatus,
+          addCustomerResponse.getFailureReason()
+      );
+  }
+  ```
+  ##### it will trigger the folloing mehtod as confirmation that user was sent to electricity provider.
+  ```groovy
+  @Transactional
+  @Override
+  public void confirmUserWasSentToElectricityProvider(Long userId, ContractStatus newStatus, String failureReason) {
+      Optional<User> user = userRepository.findByIdAndUserContractsContractNumberIsNull(userId);
+      if (!user.isPresent()) {
+          log.warn("user with id {} was not found or user already has a contract", userId);
+      }
+  
+      user.ifPresent(u -> {
+          Contract contract = u.getUserContracts().get(0);
+          contract.setStatus(newStatus);
+          contract.setFailureReason(failureReason);
+      });
+  }
+  ```
+  ***
+  #### 2. We listen to getect `MASTER_REPORT` message:
+  ```groovy
+  @StreamListener(GetecUpdateSink.MASTER_REPORT)
+  public void processMasterReport(GetecUserUpdate userUpdate) {
+      contractService.confirmUserContract(userUpdate.getUserId(), userUpdate.getContractNumber());
+      contractService.confirmPartnerAccount(userUpdate.getUserId(), userUpdate.getCustomerNumber());
+  }
+  ```
+  ##### it calls the following method: (confirmUserContract)
+  ```groovy
+  user.ifPresent(u -> {
+      UserAuthenticationDetails authenticationDetails = u.getUserAuthenticationDetails();
+      newStatus.loginState().update(authenticationDetails);
+  
+      u.getUserContracts().forEach(contract -> {
+          if (contractNumber.equals(contract.getContractNumber())) {
+              applyNewContractStatus(contract, newStatus, startDate);
+              triggerMeterInstallationRequestForConfirmedContracts(u, contract);
+          }
+      });
+  });
+  ```
+  ***
+  
+  #### 3. Listen to `GetecUpdateSink.CHANGE_REPORT` then trigger `updateContractStatus` and send `sendFirstLoginEmailByContractNumber` if the account is enabled.
+  
+  ```groovy
+  @StreamListener(GetecUpdateSink.CHANGE_REPORT)
+  public void processStatusChange(UserStatusChange userStatusChange) {
+      Optional<ContractStatus> priorStatus = contractService.findUserContract(
+              userStatusChange.getContractNumber()
+      ).map(Contract::getStatus);
+  
+      ContractStatus updatedStatus = getContractStatus(userStatusChange);
+      contractService.updateContractStatus(
+          userStatusChange.getContractNumber(),
+          updatedStatus,
+          userStatusChange.getStartDate()
+      );
+  
+      priorStatus.ifPresent(ps -> {
+          if(accountHasBecomeEnabled(ps, updatedStatus)) {
+              customerEmailService.sendFirstLoginEmailByContractNumber(userStatusChange.getContractNumber());
+          }
+      });
+  }
+  ```
+  
+  ##### it triggers the following method to find contract that matchs `contractNumber` then `applyNewContractStatus` and `triggerMeterInstallationRequestForConfirmedContracts`
+  
+  ```groovy
+  user.ifPresent(u -> {
+      UserAuthenticationDetails authenticationDetails = u.getUserAuthenticationDetails();
+      newStatus.loginState().update(authenticationDetails);
+  
+      u.getUserContracts().forEach(contract -> {
+          if (contractNumber.equals(contract.getContractNumber())) {
+              applyNewContractStatus(contract, newStatus, startDate);
+              triggerMeterInstallationRequestForConfirmedContracts(u, contract);
+          }
+      });
+  });
+  ```
+  ##### `applyNewContractStatus` updates contract status and startDate.
+  ```groovy
+  private void applyNewContractStatus(Contract contract, ContractStatus newStatus, LocalDate startDate){
+      contract.setStatus(newStatus);
+      contract.setStartDate(startDate);
+  }
+  ```
+  
+  ##### `triggerMeterInstallationRequestForConfirmedContracts` send user electricty contract ready message.
+  ```groovy
+  convertedUser.getContract().setStartDate(contract.getStartDate());
+  userElectricityContractReadyChannel.send(
+      MessageBuilder.withPayload(
+          convertedUser
+      ).build()
+  );
+  ```
+  ***
+  #### 4. Discovergy suppose to catch this message and install the meter. they call our API via `POST` to tell us to send customer an email about meter installation appointement.
+  ```groovy
+  @PostMapping("/meters/status-update")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void updateStatus(@Valid @RequestBody StatusUpdate statusUpdate) {
+      discovergyService.process(statusUpdate);
+      log.info("Status update request successfully processed");
+  }
+  ```
+  
+  ##### according to the status type we react to the call above
+  ```groovy
+  public void process(StatusUpdate statusUpdate) {
+      log.info(String.format("Status update from discovergy received: %s", statusUpdate));
+      final User user = statusUpdateService.process(statusUpdate);
+  
+      switch (statusUpdate.getStatusCode()) {
+          case INSTALLATION_PLANNED:
+              customerEmailService.sendAppointmentDateEmail(user.getId());
+              break;
+          case METER_INSTALLED:
+              customerEmailService.sendMeterInstalledEmail(user.getId());
+              break;
+      }
+  }
+  ```
+  
+  #### 5. After meter installation success they call our system via `POST` to tell that the meter been installed.
+  ```groovy
+  @PostMapping("/meters")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void meterInstalled(@Valid @RequestBody MeterInstalled meterInstalled) {
+      discovergyService.process(meterInstalled);
+      log.info("Meter installed request successfully processed");
+  }
+  ```
+  
+  ##### previous end point triggers the following method where it inserts new SmartMeter with updated status.
+  ```groovy
+  @Transactional
+  public void process(@Valid MeterInstalled meterInstalled) {
+      log.info(String.format("Meter installed request received %s", meterInstalled));
+      final User user = userRepository.findOne(
+          meterInstalled.getCustomerId()
+      ).orElseThrow(() -> new IllegalStateException(
+          String.format("CustomerId=%s does not exist", meterInstalled.getCustomerId())
+      ));
+  
+      OffsetDateTime firstReadingTimestamp = DateHelper.markAsZoneUTC(
+          meterInstalled.getFirstReading().getTimestamp()
+      );
+  
+      SmartMeter meterProvider = user.getMeterProvider();
+      meterProvider.setStatus(SmartMeterProviderStatus.METER_INSTALLED);
+      meterProvider.setLastStatusUpdate(OffsetDateTime.now());
+      meterProvider.setMeterInstalledAt(firstReadingTimestamp);
+      meterProvider.setMeterId(meterInstalled.getMeterId());
+      meterProvider.setMeterManufacturer(meterInstalled.getMeterManufacturer());
+      meterProvider.setMeterSerialNumber(meterInstalled.getMeterSerialNumber());
+  
+      meterProvider.setFirstReading(FirstReading.builder()
+          .timestamp(firstReadingTimestamp)
+          .energy(meterInstalled.getFirstReading().getEnergy())
+          .build());
+  }
+  ```
+  
+  #### 6. Discovergy suppose call our system via `POST` to tell us about Bidgely .
+  ```groovy
+  @PostMapping("/analytics/bidgely")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void bidgelyInformation(@Valid @RequestBody AnalyticsBidgely analyticsBidgely) {
+      discovergyService.process(analyticsBidgely);
+      log.info("Bidgely analytics request successfully processed");
+  }
+  ```
+  ##### previous end point trigers the following method where it sets bidgely userid, endPoint and lastStatusUpdate.
+  ```groovy
+  @Transactional
+  public void process(@Valid AnalyticsBidgely analyticsBidgely) {
+      log.debug(String.format("Bidgely analytics request received %s", analyticsBidgely));
+      final User user = userRepository.findOne(analyticsBidgely.getCustomerId()).orElseThrow(
+          () -> new IllegalStateException(
+              String.format("CustomerId=%s does not exist", analyticsBidgely.getCustomerId())
+          )
+      );
+      user.getMeterProvider().setBidgelyUserId(analyticsBidgely.getBidgelyUserId());
+      user.getMeterProvider().setBidgelyEndpointId(analyticsBidgely.getBidgelyEndpointId());
+      user.getMeterProvider().setLastStatusUpdate(OffsetDateTime.now());
+  }
+  ```
+  
+  #### 7. Discovergy call our API via `POST` to tell us that meter been installed and send meterInstalled email.
+  ```groovy
+  @PostMapping("/meters/status-update")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void updateStatus(@Valid @RequestBody StatusUpdate statusUpdate) {
+      discovergyService.process(statusUpdate);
+      log.info("Status update request successfully processed");
+  }
+  ```
+  
+  ##### according to the status type we react to the call above
+  ```groovy
+  public void process(StatusUpdate statusUpdate) {
+      log.info(String.format("Status update from discovergy received: %s", statusUpdate));
+      final User user = statusUpdateService.process(statusUpdate);
+  
+      switch (statusUpdate.getStatusCode()) {
+          case INSTALLATION_PLANNED:
+              customerEmailService.sendAppointmentDateEmail(user.getId());
+              break;
+          case METER_INSTALLED:
+              customerEmailService.sendMeterInstalledEmail(user.getId());
+              break;
+      }
+  }
+  ```
+'''
+tags: []
+isStarred: false
+isTrashed: false

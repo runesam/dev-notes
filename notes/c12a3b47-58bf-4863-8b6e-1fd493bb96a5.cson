@@ -1,0 +1,16 @@
+createdAt: "2019-04-12T08:28:41.094Z"
+updatedAt: "2019-04-12T08:29:23.651Z"
+type: "SNIPPET_NOTE"
+folder: "2f17bef9ad2f11f30f37"
+title: "pdf to url"
+description: "pdf to url"
+snippets: [
+  {
+    name: "javascript"
+    mode: "text"
+    content: ""
+  }
+]
+tags: []
+isStarred: false
+isTrashed: true

@@ -1,0 +1,62 @@
+createdAt: "2019-04-12T08:32:48.971Z"
+updatedAt: "2019-04-12T08:35:50.754Z"
+type: "MARKDOWN_NOTE"
+folder: "2f17bef9ad2f11f30f37"
+title: "`javascript"
+content: '''
+  ```javascript
+  const merge = require("webpack-merge");
+  const common = require("./webpack.common.js");
+  const webpack = require("webpack");
+  
+  module.exports = (env = {}, brand) => merge(common(brand, env), {
+  	mode: "development",
+  	devtool: "inline-source-map",
+  	devServer: {
+  		historyApiFallback: true,
+  		host: "0.0.0.0",
+  		disableHostCheck: true,
+  		proxy: {
+  			"/user-management/users/4142/bills/600717657/content": {
+  				pathRewrite: { "/user-management/users/4142/bills/600717657/content": "" },
+  				target: "http://localhost:5000/pdf/",
+  				secure: false,
+  				changeOrigin: true,
+  			},
+  			"/readings": {
+  				target: "https://fresh.databahn.energy/",
+  				secure: false,
+  				changeOrigin: true,
+  			},
+  			"/user-management": {
+  				target: "https://fresh.databahn.energy/",
+  				secure: false,
+  				changeOrigin: true,
+  			},
+  			"/auth": {
+  				target: "https://fresh.databahn.energy/",
+  				secure: false,
+  				changeOrigin: true,
+  			},
+  			"/disagg": {
+  				target: "https://fresh.databahn.energy/",
+  				secure: false,
+  				changeOrigin: true,
+  			},
+  		},
+  	},
+  	plugins: [
+  		new webpack.DefinePlugin({
+  			API_URL: "\\"/\\"",
+  			NODE_ENV: "\\"development\\"",
+  		})
+  	]
+  });
+  ```
+'''
+tags: [
+  "webpack"
+  "proxy"
+]
+isStarred: false
+isTrashed: false

@@ -1,0 +1,30 @@
+createdAt: "2019-04-12T08:29:25.237Z"
+updatedAt: "2019-04-12T08:33:07.682Z"
+type: "MARKDOWN_NOTE"
+folder: "2f17bef9ad2f11f30f37"
+title: "`javascript"
+content: '''
+  ```javascript
+  class test {
+  	constructor() {
+      super()
+  		if (this.props.pdfLink.includes("content")) {
+  			http.get(this.props.pdfLink, { responseType: "blob" }).then(this.showFile);
+  		} else {
+  			this.setState({ pdfURL: this.props.pdfLink });
+  		}
+  	}
+    showFile = (blob) => {
+  		const newBlob = new Blob([blob.data], {type: "application/pdf"});
+  		this.setState({ pdfURL: URL.createObjectURL(newBlob) });
+  	};
+  }
+  ```
+'''
+tags: [
+  "javascript"
+  "pdf"
+  "pdftourl"
+]
+isStarred: false
+isTrashed: false

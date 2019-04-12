@@ -19,6 +19,11 @@
       "key": "ab21d9b8c8f4ac7cf2d1",
       "color": "#E8D252",
       "name": "dev-ops"
+    },
+    {
+      "key": "b25ec41f710bac8ebf03",
+      "color": "#B013A4",
+      "name": "flow"
     }
   ],
   "version": "1.0"
