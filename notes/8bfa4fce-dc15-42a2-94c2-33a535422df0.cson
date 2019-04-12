@@ -1,5 +1,9 @@
 createdAt: "2018-12-06T10:46:48.986Z"
+<<<<<<< HEAD
 updatedAt: "2018-12-06T10:48:51.510Z"
+=======
+updatedAt: "2019-01-27T08:57:05.343Z"
+>>>>>>> 72dc8a1b30cee19e98767df87c72f2ed38589a69
 type: "SNIPPET_NOTE"
 folder: "60f2be28d5e3dfe51def"
 title: "list of strings and streaming it"
@@ -7,6 +11,7 @@ description: "list of strings and streaming it"
 snippets: [
   {
     name: ""
+<<<<<<< HEAD
     mode: "text"
     content: '''
         void userSelectsSomeAppliances() {
@@ -23,6 +28,24 @@ snippets: [
                 appliance.click();
             });
         }
+=======
+    mode: "Java"
+    content: '''
+      void userSelectsSomeAppliances() {
+          String[] appliances = {
+                  "appliance-washingMachine",
+                  "appliance-refrigerator",
+                  "appliance-freezer",
+                  "appliance-oven",
+                  "appliance-kettle",
+                  "appliance-cableBox"
+          };
+          Arrays.stream(appliances).forEach(applianceName -> {
+              WebElement appliance = findByAttribute("data-qa", applianceName);
+              appliance.click();
+          });
+      }
+>>>>>>> 72dc8a1b30cee19e98767df87c72f2ed38589a69
     '''
   }
 ]

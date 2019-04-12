@@ -1,5 +1,9 @@
 createdAt: "2018-12-18T09:48:10.267Z"
+<<<<<<< HEAD
 updatedAt: "2018-12-18T09:48:24.058Z"
+=======
+updatedAt: "2019-01-27T08:56:52.542Z"
+>>>>>>> 72dc8a1b30cee19e98767df87c72f2ed38589a69
 type: "SNIPPET_NOTE"
 folder: "60f2be28d5e3dfe51def"
 title: "lambuk"
@@ -10,6 +14,7 @@ description: '''
 snippets: [
   {
     name: ""
+<<<<<<< HEAD
     mode: "text"
     content: '''
           public static class MeterActivityBuilder {
@@ -22,6 +27,20 @@ snippets: [
                   return this;
               }
           }
+=======
+    mode: "Java"
+    content: '''
+      public static class MeterActivityBuilder {
+          public MeterActivityBuilder fromEvent(String event) {
+              if (event.equals("error")) {
+                  error(event);
+              } else {
+                  activity(Boolean.valueOf(event));
+              }
+              return this;
+          }
+      }
+>>>>>>> 72dc8a1b30cee19e98767df87c72f2ed38589a69
     '''
   }
 ]
