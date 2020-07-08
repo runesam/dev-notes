@@ -1,0 +1,16 @@
+createdAt: "2020-04-14T16:54:10.618Z"
+updatedAt: "2020-04-14T16:54:33.088Z"
+type: "SNIPPET_NOTE"
+folder: "2f17bef9ad2f11f30f37"
+title: "create npmrc file via sh"
+description: "create npmrc file via sh"
+snippets: [
+  {
+    name: "sh"
+    mode: "text"
+    content: "echo -e \"registry=http://nexus.dev-databahn.com/repository/fresh-energy-npm-group/\\n_auth=${TOKEN}\" >  .npmrc"
+  }
+]
+tags: []
+isStarred: false
+isTrashed: false

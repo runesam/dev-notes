@@ -1,5 +1,5 @@
 createdAt: "2019-10-09T09:33:52.666Z"
-updatedAt: "2019-10-09T09:35:20.519Z"
+updatedAt: "2019-10-17T13:14:17.638Z"
 type: "SNIPPET_NOTE"
 folder: "ab21d9b8c8f4ac7cf2d1"
 title: "tag an existing image in the ECR"
@@ -12,7 +12,7 @@ snippets: [
     name: "shell"
     mode: "text"
     content: '''
-      MANIFEST=$(aws ecr batch-get-image --repository-name databahn-frontend --image-ids imageDigest=sha256:871619608b43bd73d4ab0dd63f633e6d7c523316416c34269e0fc8b5cddc9ebc --query 'images[].imageManifest' --output text)
+      MANIFEST=$(aws ecr batch-get-image --repository-name databahn-frontend --image-ids imageDigest=sha256:a12a2a9f414fac61245ce04e62a40d0f4eb45ab6bae5ecac3e263ceae97de945 --query 'images[].imageManifest' --output text)
       aws ecr put-image --repository-name databahn-frontend --image-tag backup --image-manifest "$MANIFEST"
       
     '''
