@@ -1,0 +1,15 @@
+createdAt: "2020-04-14T16:53:24.119Z"
+updatedAt: "2020-04-14T16:53:48.654Z"
+type: "MARKDOWN_NOTE"
+folder: "ab21d9b8c8f4ac7cf2d1"
+title: "ssh -i /path/my-key-pair.pem ec2-user@ec2-198-51-100-1.compute-1.amazonaws.com"
+content: '''
+  ssh -i /path/my-key-pair.pem ec2-user@ec2-198-51-100-1.compute-1.amazonaws.com
+  
+'''
+tags: [
+  "ssh"
+  "ec2"
+]
+isStarred: false
+isTrashed: false
